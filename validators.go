@@ -13,14 +13,6 @@ type validator struct {
 	fn    ValidatorFunc
 }
 
-func newValidator(name, param string, fn ValidatorFunc) validator {
-	return validator{
-		name:  name,
-		param: param,
-		fn:    fn,
-	}
-}
-
 var defaultValidators = map[string]ValidatorFunc{
 	"required": exists,
 	"unique":   isUnique,

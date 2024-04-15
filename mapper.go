@@ -135,7 +135,7 @@ func (m *Mapper) convert(src, dst FieldValue) (FieldValue, error) {
 
 	switch dst.Type().Kind() {
 	case reflect.Map:
-		return src, &Error{msg: fmt.Sprintf("mapping different types of maps doesn't supported")}
+		return src, &Error{msg: "mapping different types of maps doesn't supported"}
 	case reflect.Slice, reflect.Array:
 		if src.Type().Kind() != reflect.Slice && src.Type().Kind() != reflect.Array {
 			return dst, &FieldError{
@@ -214,7 +214,7 @@ func (m *Mapper) convertInts(src, dst FieldValue) error {
 
 		i, err := strconv.ParseInt(src.String(), 10, 64)
 		if err != nil {
-			return &Error{msg: fmt.Sprintf("failed to auto convert")}
+			return &Error{msg: "failed to auto convert"}
 		}
 		dst.SetInt(i)
 	default:
@@ -252,7 +252,7 @@ func (m *Mapper) convertUints(src, dst FieldValue) error {
 
 		i, err := strconv.ParseUint(src.String(), 10, 64)
 		if err != nil {
-			return &Error{msg: fmt.Sprintf("failed to auto convert")}
+			return &Error{msg: "failed to auto convert"}
 		}
 		dst.SetUint(i)
 	default:
@@ -290,7 +290,7 @@ func (m *Mapper) convertFloats(src, dst FieldValue) error {
 
 		i, err := strconv.ParseFloat(src.String(), 64)
 		if err != nil {
-			return &Error{msg: fmt.Sprintf("failed to auto convert")}
+			return &Error{msg: "failed to auto convert"}
 		}
 		dst.SetFloat(i)
 	default:
@@ -394,7 +394,7 @@ func (m *Mapper) parseTagValues(tags []string) (fieldOptions, error) {
 func (m *Mapper) parseValidator(tag string) (validator, error) {
 	v := parseValidatorTag(tag)
 
-	v.fn, _ = defaultValidators[v.name]
+	v.fn = defaultValidators[v.name]
 
 	if m.validators != nil {
 		if fn, found := m.validators[v.name]; found {
