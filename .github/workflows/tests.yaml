@@ -24,5 +24,11 @@ jobs:
           go-version: ${{ matrix.go }}
 
       - name: Run Tests
-        run: go test -v ./...
+        run: go test -race -covermode=atomic -coverprofile=coverage.out
+
+      - name: Upload coverage reports to Codecov
+        uses: codecov/codecov-action@v4.3.0
+        with:
+          file: coverage.out
+          token: ${{ secrets.CODECOV_TOKEN }}
         
