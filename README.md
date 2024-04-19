@@ -288,7 +288,7 @@ I'd be happy to hear any suggestions or improvements you have.
 
 ## Contribution
 
-Thanks for taking the time to contribute. Please see [CONTRIBUTING.md](https://github.com/alir32a/smapper/CONTRIBUTING.md).
+Thanks for taking the time to contribute. Please see [CONTRIBUTING.md](https://github.com/alir32a/smapper/blob/main/CONTRIBUTING.md).
 
 ## Donations
 
