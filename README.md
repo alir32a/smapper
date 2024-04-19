@@ -1,7 +1,5 @@
 # smapper
 
----
-
 [![Go Report Card](https://goreportcard.com/badge/github.com/alir32a/smapper)](https://goreportcard.com/report/github.com/alir32a/smapper)
 ![tests workflow](https://github.com/alir32a/smapper/actions/workflows/tests.yml/badge.svg?branch=main)
 ![GitHub Actions Workflow Status](https://img.shields.io/github/actions/workflow/status/alir32a/smapper/checks.yml?label=build)
@@ -13,7 +11,6 @@ gives you control over incompatible types (e.g. string to time.Time) using callb
 
 ## Installation
 
----
 Using ```go get```
 
 ```
@@ -21,8 +18,6 @@ $ go get github.com/alir32a/smapper
 ```
 
 ## Usages and Examples
-
----
 
 ### Convert two similar structs
 
@@ -285,7 +280,6 @@ func main() {
 
 ## What's Next?
 
----
 - Implement more built-in validators.
 - Support automatic mapping between different types of maps.
 (e.g. map[int]User to map[string]Admin, currently you need to write a callback to the conversion)
@@ -294,12 +288,10 @@ I'd be happy to hear any suggestions or improvements you have.
 
 ## Contribution
 
----
 Thanks for taking the time to contribute. Please see [CONTRIBUTING.md](https://github.com/alir32a/smapper/CONTRIBUTING.md).
 
 ## Donations
 
----
 Thank you for your encouraging support, It helps me build more things.
 
 bitcoin: `bc1q44ffnc274fg0j982tjqthrn9ka85l8hhntgj82`
