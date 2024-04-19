@@ -8,7 +8,7 @@
 
 # Suggest A New Idea
 
-1. Create an issue using
+Create an issue using
 [this](https://github.com/alir32a/smapper/tree/main/.github/ISSUE_TEMPLATE/feature_request.md) template
 
 # Implement A New Feature
