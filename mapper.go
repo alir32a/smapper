@@ -87,10 +87,9 @@ func (m *Mapper) mapTypes(src, dst FieldValue) error {
 			// execute parsed validators
 			for _, v := range dstTags.validators {
 				if !v.fn(value, v.param) {
-					return &FieldError{
-						value:  src,
-						action: ActionValidation,
-						msg:    fmt.Sprintf("validator %s failed", v.name),
+					return &ValidationError{
+						value:         NewFieldValue(value, src.Type(), field.Name),
+						validatorName: v.name,
 					}
 				}
 			}
@@ -99,10 +98,9 @@ func (m *Mapper) mapTypes(src, dst FieldValue) error {
 				// execute parsed callback
 				m, err := dstTags.callback(value.Type(), dstField.Type(), value.Interface())
 				if err != nil {
-					return &FieldError{
-						value:  src,
-						action: ActionCallback,
-						msg:    err.Error(),
+					return &CallbackError{
+						value: NewFieldValue(value, src.Type(), field.Name),
+						msg:   err.Error(),
 					}
 				}
 
@@ -139,9 +137,8 @@ func (m *Mapper) convert(src, dst FieldValue) (FieldValue, error) {
 	case reflect.Slice, reflect.Array:
 		if src.Type().Kind() != reflect.Slice && src.Type().Kind() != reflect.Array {
 			return dst, &FieldError{
-				value:  src,
-				action: ActionFieldMapping,
-				msg:    fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
+				value: src,
+				msg:   fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
 			}
 		}
 
@@ -181,9 +178,8 @@ func (m *Mapper) convert(src, dst FieldValue) (FieldValue, error) {
 		}
 	default:
 		return dst, &FieldError{
-			value:  dst,
-			action: ActionFieldMapping,
-			msg:    fmt.Sprintf("%s is not convertible", dst.Type()),
+			value: dst,
+			msg:   fmt.Sprintf("%s is not convertible", dst.Type()),
 		}
 	}
 
@@ -204,8 +200,7 @@ func (m *Mapper) convertInts(src, dst FieldValue) error {
 	case reflect.String:
 		if !m.AutoStringToNumberConversion {
 			return &FieldError{
-				value:  src,
-				action: ActionFieldMapping,
+				value: src,
 				msg: fmt.Sprintf(
 					"want %s, got string (if you want to auto convert strings to numbers, set AutoStringToNumberConversion to true",
 					src.Type()),
@@ -219,9 +214,8 @@ func (m *Mapper) convertInts(src, dst FieldValue) error {
 		dst.SetInt(i)
 	default:
 		return &FieldError{
-			value:  src,
-			action: ActionFieldMapping,
-			msg:    fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
+			value: src,
+			msg:   fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
 		}
 	}
 
@@ -242,8 +236,7 @@ func (m *Mapper) convertUints(src, dst FieldValue) error {
 	case reflect.String:
 		if !m.AutoStringToNumberConversion {
 			return &FieldError{
-				value:  src,
-				action: ActionFieldMapping,
+				value: src,
 				msg: fmt.Sprintf(
 					"want %s, got string (if you want to auto convert strings to numbers, set AutoStringToNumberConversion to true",
 					src.Type()),
@@ -257,9 +250,8 @@ func (m *Mapper) convertUints(src, dst FieldValue) error {
 		dst.SetUint(i)
 	default:
 		return &FieldError{
-			value:  src,
-			action: ActionFieldMapping,
-			msg:    fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
+			value: src,
+			msg:   fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
 		}
 	}
 
@@ -280,8 +272,7 @@ func (m *Mapper) convertFloats(src, dst FieldValue) error {
 	case reflect.String:
 		if !m.AutoStringToNumberConversion {
 			return &FieldError{
-				value:  src,
-				action: ActionFieldMapping,
+				value: src,
 				msg: fmt.Sprintf(
 					"want %s, got string (if you want to auto convert strings to numbers, set AutoStringToNumberConversion to true",
 					src.Type()),
@@ -295,9 +286,8 @@ func (m *Mapper) convertFloats(src, dst FieldValue) error {
 		dst.SetFloat(i)
 	default:
 		return &FieldError{
-			value:  src,
-			action: ActionFieldMapping,
-			msg:    fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
+			value: src,
+			msg:   fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
 		}
 	}
 
@@ -310,8 +300,7 @@ func (m *Mapper) convertStrings(src, dst FieldValue) error {
 
 	if src.Kind() != reflect.String && !m.AutoStringToNumberConversion {
 		return &FieldError{
-			value:  src,
-			action: ActionFieldMapping,
+			value: src,
 			msg: fmt.Sprintf(
 				"want %s, got %s (if you want to auto convert numbers to strings, set AutoStringToNumberConversion to true",
 				src.Type(), dst.Type()),
@@ -330,9 +319,8 @@ func (m *Mapper) convertStrings(src, dst FieldValue) error {
 		dst.SetString(src.String())
 	default:
 		return &FieldError{
-			value:  src,
-			action: ActionFieldMapping,
-			msg:    fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
+			value: src,
+			msg:   fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
 		}
 	}
 
