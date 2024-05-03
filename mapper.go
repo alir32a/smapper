@@ -373,6 +373,18 @@ func Map(input, output any, opts ...Option) error {
 	return mapper.Map(input, output)
 }
 
+// MapAndReturn initialize a new Mapper with the given options, executes the Mapper.Map and return the mapped object.
+func MapAndReturn[T any](input any, output *T, opts ...Option) (*T, error) {
+	mapper := New(opts...)
+
+	return output, mapper.Map(input, output)
+}
+
+// MapAndReturnWith executes the Mapper.Map on the given mapper, and return the mapped object.
+func MapAndReturnWith[T any](mapper *Mapper, input any, output *T) (*T, error) {
+	return output, mapper.Map(input, output)
+}
+
 type fieldOptions struct {
 	field      string
 	callback   CallbackFunc

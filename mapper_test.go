@@ -349,3 +349,20 @@ func TestMap_AutoNumberToStringConversion(t *testing.T) {
 	f, _ := strconv.ParseFloat(validSrc.String, 64)
 	assert.Equal(t, f, d.Float)
 }
+
+func TestMapAndReturn(t *testing.T) {
+	t.Parallel()
+
+	simple := Simple{
+		Int:    1,
+		String: "simple",
+		float:  2.32,
+	}
+
+	anotherSimple, err := MapAndReturn(simple, &AnotherSimple{})
+	assert.NoError(t, err)
+
+	assert.EqualValues(t, simple.Int, anotherSimple.Uint32)
+	assert.Equal(t, simple.String, anotherSimple.String)
+	assert.NotEqual(t, simple.float, anotherSimple.Float)
+}

@@ -106,3 +106,28 @@ func ExampleMapper_Map_callbacks() {
 
 	fmt.Println(user.Name) // ADMIN
 }
+
+func ExampleMapAndReturn() {
+	type Person struct {
+		ID       uint
+		Username string
+	}
+
+	type User struct {
+		ID   int64
+		Name string `smapper:"username"`
+	}
+
+	person := Person{
+		ID:       42,
+		Username: "alir32a",
+	}
+
+	user, err := smapper.MapAndReturn(person, &User{})
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(user.ID)   // 42
+	fmt.Println(user.Name) // alir32a
+}
