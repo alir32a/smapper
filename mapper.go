@@ -127,13 +127,52 @@ func (m *Mapper) mapTypes(src, dst FieldValue) error {
 
 // convert converts src type to dst type, returns error if the conversion is impossible. (e.g. map to slice).
 func (m *Mapper) convert(src, dst FieldValue) (FieldValue, error) {
+	var err error
+
 	if src.Type() == dst.Type() {
 		return src, nil
 	}
 
 	switch dst.Type().Kind() {
 	case reflect.Map:
-		return src, &Error{msg: "mapping different types of maps doesn't supported"}
+		if src.Type().Kind() != reflect.Map {
+			return dst, &FieldError{
+				value: src,
+				msg:   fmt.Sprintf("cannot auto convert %s to %s", src.Type(), dst.Type()),
+			}
+		}
+		dst = FieldValue{Value: reflect.MakeMap(dst.Type()), ParentType: dst.ParentType, FieldName: dst.FieldName}
+
+		dstKey := dst.Type().Key()
+		dstVal := dst.Type().Elem()
+
+		iter := src.MapRange()
+		for iter.Next() {
+			key := FieldValue{Value: iter.Key()}
+			val := FieldValue{Value: iter.Value()}
+
+			if key.Type() != dstKey {
+				zeroKey := reflect.New(dstKey).Elem()
+
+				key, err = m.convert(key, FieldValue{Value: zeroKey})
+				if err != nil {
+					return FieldValue{}, err
+				}
+			}
+
+			if val.Type() != dstVal {
+				zeroVal := reflect.New(dstVal).Elem()
+
+				val, err = m.convert(val, FieldValue{Value: zeroVal})
+				if err != nil {
+					return FieldValue{}, err
+				}
+			}
+
+			dst.SetMapIndex(key.Value, val.Value)
+		}
+
+		return dst, nil
 	case reflect.Slice, reflect.Array:
 		if src.Type().Kind() != reflect.Slice && src.Type().Kind() != reflect.Array {
 			return dst, &FieldError{
@@ -148,7 +187,7 @@ func (m *Mapper) convert(src, dst FieldValue) (FieldValue, error) {
 		for i := 0; i < src.Len(); i++ {
 			_, err := m.convert(src.From(src.Index(i)), dst.From(dst.Index(i)))
 			if err != nil {
-				return src, err
+				return dst, err
 			}
 		}
 	case reflect.Int, reflect.Int8, reflect.Int16, reflect.Int32, reflect.Int64:
@@ -203,7 +242,7 @@ func (m *Mapper) convertInts(src, dst FieldValue) error {
 				value: src,
 				msg: fmt.Sprintf(
 					"want %s, got string (if you want to auto convert strings to numbers, set AutoStringToNumberConversion to true",
-					src.Type()),
+					dst.Type()),
 			}
 		}
 
@@ -239,7 +278,7 @@ func (m *Mapper) convertUints(src, dst FieldValue) error {
 				value: src,
 				msg: fmt.Sprintf(
 					"want %s, got string (if you want to auto convert strings to numbers, set AutoStringToNumberConversion to true",
-					src.Type()),
+					dst.Type()),
 			}
 		}
 
@@ -275,7 +314,7 @@ func (m *Mapper) convertFloats(src, dst FieldValue) error {
 				value: src,
 				msg: fmt.Sprintf(
 					"want %s, got string (if you want to auto convert strings to numbers, set AutoStringToNumberConversion to true",
-					src.Type()),
+					dst.Type()),
 			}
 		}
 

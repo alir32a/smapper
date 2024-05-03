@@ -24,7 +24,7 @@ type AnotherSimple struct {
 type Complex struct {
 	Simple
 	Slice     []Simple
-	Map       map[Simple]struct{}
+	Map       map[int]Simple
 	Simples   []Simple
 	Complexes []Complex
 }
@@ -32,7 +32,7 @@ type Complex struct {
 type AnotherComplex struct {
 	AnotherSimple AnotherSimple `smapper:"simple"`
 	Slice         []Simple
-	Map           map[Simple]struct{}
+	Map           map[float64]AnotherSimple
 	Simples       []Simple `smapper:"-"`
 	Complexes     []AnotherComplex
 }
@@ -88,10 +88,10 @@ func TestMap_Complex(t *testing.T) {
 			float:  1.23,
 		},
 		Slice: simples,
-		Map: map[Simple]struct{}{
-			simples[0]: {},
-			simples[1]: {},
-			simples[2]: {},
+		Map: map[int]Simple{
+			42:  simples[0],
+			17:  simples[1],
+			154: simples[2],
 		},
 		Simples: simples,
 		Complexes: []Complex{
@@ -115,8 +115,16 @@ func TestMap_Complex(t *testing.T) {
 	assert.NotEqual(t, src.Simple.float, dst.AnotherSimple.Float,
 		"src.Simple.float is unexported and should not be equal to dst.AnotherSimple.Float")
 
+	for k, v := range src.Map {
+		dstVal, found := dst.Map[float64(k)]
+		assert.Truef(t, found, "key %d not found on destination", k)
+
+		assert.EqualValues(t, v.Int, dstVal.Uint32)
+		assert.Equal(t, v.String, dstVal.String)
+		assert.NotEqual(t, v.float, dstVal.Float)
+	}
+
 	assert.Equal(t, src.Slice, dst.Slice, "src.Slice should be equal to dst.Slice")
-	assert.Equal(t, src.Map, dst.Map, "src.Map should be equal to dst.Map")
 	assert.Nil(t, dst.Simples, "dst.Simples have an ignore tag, so it should be nil")
 
 	assert.EqualValues(t, src.Complexes[0].Simple.Int, dst.Complexes[0].AnotherSimple.Uint32,

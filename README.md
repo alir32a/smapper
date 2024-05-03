@@ -278,14 +278,6 @@ func main() {
 }
 ```
 
-## What's Next?
-
-- Implement more built-in validators.
-- Support automatic mapping between different types of maps.
-(e.g. map[int]User to map[string]Admin, currently you need to write a callback to the conversion)
-
-I'd be happy to hear any suggestions or improvements you have.
-
 ## Contribution
 
 Thanks for taking the time to contribute. Please see [CONTRIBUTING.md](https://github.com/alir32a/smapper/blob/main/CONTRIBUTING.md).
