@@ -20,6 +20,7 @@ $ go get github.com/alir32a/smapper
 ## Usages and Examples
 
 ### Convert two similar structs
+using `Map`
 
 ```go
 package main
@@ -50,6 +51,44 @@ func main() {
 	person := Person{}
 
 	err := mapper.Map(user, &person)
+	if err != nil {
+		panic(err)
+	}
+
+	fmt.Println(person.ID) // 0
+	fmt.Println(person.UserID)   // 42
+	fmt.Println(person.Name) // alir32a
+}
+```
+
+or using `MapTo`
+
+```go
+package main
+
+import (
+	"fmt"
+	"github.com/alir32a/smapper"
+)
+
+type User struct {
+	ID       uint
+	Username string
+}
+
+type Person struct {
+	ID   int64 `smapper:"-"` // will be skipped
+	UserID uint `smapper:"ID"`
+	Name string `smapper:"username"`
+}
+
+func main() {
+	user := User{
+		ID:       42,
+		Username: "alir32a",
+	}
+
+	person, err := smapper.MapTo[Person](user)
 	if err != nil {
 		panic(err)
 	}
