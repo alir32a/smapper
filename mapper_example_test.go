@@ -107,7 +107,7 @@ func ExampleMapper_Map_callbacks() {
 	fmt.Println(user.Name) // ADMIN
 }
 
-func ExampleMapAndReturn() {
+func ExampleMapTo() {
 	type Person struct {
 		ID       uint
 		Username string
