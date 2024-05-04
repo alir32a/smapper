@@ -123,7 +123,7 @@ func ExampleMapAndReturn() {
 		Username: "alir32a",
 	}
 
-	user, err := smapper.MapAndReturn(person, &User{})
+	user, err := smapper.MapTo[User](person)
 	if err != nil {
 		panic(err)
 	}

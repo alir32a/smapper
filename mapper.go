@@ -373,15 +373,25 @@ func Map(input, output any, opts ...Option) error {
 	return mapper.Map(input, output)
 }
 
-// MapAndReturn initialize a new Mapper with the given options, executes the Mapper.Map and return the mapped object.
-func MapAndReturn[T any](input any, output *T, opts ...Option) (*T, error) {
+// MapTo initializes a new Mapper with the provided options, maps the input value to a new instance of type T,
+// and returns a pointer to the mapped value.
+func MapTo[T any](input any, opts ...Option) (*T, error) {
 	mapper := New(opts...)
+
+	output := new(T)
 
 	return output, mapper.Map(input, output)
 }
 
-// MapAndReturnWith executes the Mapper.Map on the given mapper, and return the mapped object.
-func MapAndReturnWith[T any](mapper *Mapper, input any, output *T) (*T, error) {
+// MapToWith maps the input value to a new instance of type T using the provided mapper,
+// and returns a pointer to the mapped value.
+func MapToWith[T any](mapper *Mapper, input any) (*T, error) {
+	if mapper == nil {
+		return nil, &Error{msg: "mapper cannot be nil"}
+	}
+
+	output := new(T)
+
 	return output, mapper.Map(input, output)
 }
 

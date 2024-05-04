@@ -359,7 +359,7 @@ func TestMapAndReturn(t *testing.T) {
 		float:  2.32,
 	}
 
-	anotherSimple, err := MapAndReturn(simple, &AnotherSimple{})
+	anotherSimple, err := MapTo[AnotherSimple](simple)
 	assert.NoError(t, err)
 
 	assert.EqualValues(t, simple.Int, anotherSimple.Uint32)
